@@ -429,6 +429,25 @@ document.getElementById('masterVolume').addEventListener('input', (e) => {
     }
 });
 
+// ===== MODAL CONTROLS =====
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const qrModal = document.getElementById('qrModal');
+const modalClose = document.getElementById('modalClose');
+
+hamburgerBtn.addEventListener('click', () => {
+    qrModal.classList.add('active');
+});
+
+modalClose.addEventListener('click', () => {
+    qrModal.classList.remove('active');
+});
+
+qrModal.addEventListener('click', (e) => {
+    if (e.target === qrModal) {
+        qrModal.classList.remove('active');
+    }
+});
+
 // ===== QR CODE GENERATION =====
 function generateQRCode() {
     const audienceUrl = window.location.origin + '/audience.html';
@@ -436,8 +455,8 @@ function generateQRCode() {
     
     new QRCode(document.getElementById('qrcode'), {
         text: audienceUrl,
-        width: 150,
-        height: 150,
+        width: 200,
+        height: 200,
         colorDark: '#000000',
         colorLight: '#FFFFFF',
         correctLevel: QRCode.CorrectLevel.M

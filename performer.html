@@ -10,6 +10,122 @@
         body {
             padding: 12px;
             background: #FFFFFF;
+            position: relative;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            width: 40px;
+            height: 40px;
+            border: 1px solid #000000;
+            background: #FFFFFF;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            z-index: 1000;
+        }
+
+        .hamburger span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: #000000;
+        }
+
+        .hamburger:hover {
+            background: #000000;
+        }
+
+        .hamburger:hover span {
+            background: #FFFFFF;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #FFFFFF;
+            border: 2px solid #000000;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 30px;
+            height: 30px;
+            border: 1px solid #000000;
+            background: #FFFFFF;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 28px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .modal-close:hover {
+            background: #000000;
+            color: #FFFFFF;
+        }
+
+        .modal h2 {
+            font-size: 24px;
+            font-weight: normal;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 8px;
+        }
+
+        .modal-qr {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .modal-qr #qrcode {
+            display: inline-block;
+            padding: 12px;
+            border: 1px solid #000000;
+        }
+
+        .modal-explanation {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            border: 1px solid #000000;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .audience-url {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 11px;
+            margin-top: 8px;
+            word-break: break-all;
         }
 
         h1 {
@@ -54,7 +170,7 @@
         }
 
         .phone-preview h3 {
-            font-size: 12px;
+            font-size: 11px;
             font-family: 'Courier New', Courier, monospace;
             text-align: center;
             padding: 4px;
@@ -208,35 +324,6 @@
             color: #FFFFFF;
         }
 
-        /* QR Code */
-        .qr-container {
-            border: 1px solid #000000;
-            padding: 12px;
-            text-align: center;
-        }
-
-        .qr-container h3 {
-            font-size: 12px;
-            font-family: 'Courier New', Courier, monospace;
-            margin-bottom: 8px;
-        }
-
-        #qrcode {
-            display: inline-block;
-            padding: 8px;
-            border: 1px solid #000000;
-        }
-
-        #qrcode img {
-            display: block;
-        }
-
-        .audience-url {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 10px;
-            margin-top: 8px;
-            word-break: break-all;
-        }
 
         @media (max-width: 1200px) {
             .main-container {
@@ -250,13 +337,44 @@
     </style>
 </head>
 <body>
+    <!-- Hamburger Menu -->
+    <div class="hamburger" id="hamburgerBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="qrModal">
+        <div class="modal-content">
+            <div class="modal-close" id="modalClose">×</div>
+            <h2>Audience Submission</h2>
+            
+            <div class="modal-qr">
+                <div id="qrcode"></div>
+                <div class="audience-url" id="audienceUrl">Loading...</div>
+            </div>
+
+            <div class="modal-explanation">
+INSTRUCTIONS FOR AUDIENCE:
+
+1. Scan this QR code with your phone
+2. Click anywhere on the screen
+3. A dot will appear - type your word
+4. Hit DONE to submit
+
+Each audience member can submit one word. The position of their click influences the voice modulation parameters.
+            </div>
+        </div>
+    </div>
+
     <h1>Seeding Voices</h1>
 
     <div class="main-container">
         <div class="left-section">
             <!-- Left Panel: Song Generation -->
             <div class="panel">
-                <h2>Words (<span id="wordCount">0</span>)</h2>
+                <h2>Word Seeds (<span id="wordCount">0</span>)</h2>
                 <div id="wordsContainer" class="words-container">
                     Waiting for words...
                 </div>
@@ -349,14 +467,8 @@
         <!-- Right Sidebar: Phone Preview -->
         <div>
             <div class="phone-preview">
-                <h3>AUDIENCE VIEW</h3>
+                <h3>SEED FIELD</h3>
                 <div id="phoneScreen" class="phone-screen"></div>
-            </div>
-
-            <div class="qr-container">
-                <h3>SCAN TO SUBMIT</h3>
-                <div id="qrcode"></div>
-                <div class="audience-url" id="audienceUrl">Loading...</div>
             </div>
         </div>
     </div>
