@@ -561,6 +561,12 @@
     </div>
     </div>
 
+    <script>
+        // Check authentication
+        if (sessionStorage.getItem('performerAuth') !== 'authenticated') {
+            window.location.href = '/performer-login.html';
+        }
+    </script>
     <script src="/performer.js"></script>
 </body>
 </html>

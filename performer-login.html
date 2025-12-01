@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performer Access</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #FFFFFF;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .login-container {
+            border: 1px solid #000000;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: normal;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 8px;
+        }
+
+        .instruction {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            margin-bottom: 12px;
+            padding: 8px;
+            border: 1px solid #000000;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            font-family: 'Courier New', Courier, monospace;
+            border: 1px solid #000000;
+            background: #FFFFFF;
+            color: #000000;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            background: #000000;
+            color: #FFFFFF;
+            border: 1px solid #000000;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #FFFFFF;
+            color: #000000;
+        }
+
+        .error {
+            padding: 8px;
+            border: 1px solid #000000;
+            background: #000000;
+            color: #FFFFFF;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>Performer Access</h1>
+        
+        <div class="instruction">
+            ENTER PASSWORD TO ACCESS PERFORMER DASHBOARD
+        </div>
+
+        <form id="loginForm">
+            <label for="password">Password:</label>
+            <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                autocomplete="off"
+                required
+            />
+            <button type="submit">ACCESS DASHBOARD</button>
+        </form>
+
+        <div id="error" class="error">
+            INCORRECT PASSWORD
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const passwordInput = document.getElementById('password');
+        const errorDiv = document.getElementById('error');
+
+        // Correct password
+        const CORRECT_PASSWORD = 'thankyoudan';
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const enteredPassword = passwordInput.value;
+            
+            if (enteredPassword === CORRECT_PASSWORD) {
+                // Set session authentication
+                sessionStorage.setItem('performerAuth', 'authenticated');
+                // Redirect to performer page
+                window.location.href = '/performer.html';
+            } else {
+                // Show error
+                errorDiv.classList.add('show');
+                passwordInput.value = '';
+                passwordInput.focus();
+                
+                // Hide error after 3 seconds
+                setTimeout(() => {
+                    errorDiv.classList.remove('show');
+                }, 3000);
+            }
+        });
+
+        // Focus password field on load
+        passwordInput.focus();
+    </script>
+</body>
+</html>
+
