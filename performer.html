@@ -309,6 +309,13 @@
             transform: translate(-50%, -50%);
         }
 
+        /* Sound Panel Internal Grid */
+        .sound-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
         /* Voice Controls - Single Column */
         .voice-controls {
             display: flex;
@@ -376,6 +383,10 @@
 
         @media (max-width: 1200px) {
             .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sound-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -459,21 +470,26 @@
             <div id="songOutput">Song will appear here...</div>
         </div>
 
-        <!-- Column 2: Seeding a Sound (with Voice Modulation inside) -->
+        <!-- Column 2: Seeding a Sound (with internal 2-column grid) -->
         <div class="panel">
             <h2>
                 <span>Seeding a Sound</span>
                 <button id="generateVoiceBtn">LET A SOUND BLOOM</button>
             </h2>
 
-            <div class="seed-field">
-                <h3>SEED FIELD</h3>
-                <div id="fieldScreen" class="field-screen"></div>
-            </div>
+            <div class="sound-grid">
+                <!-- Left: Seed Field -->
+                <div>
+                    <div class="seed-field">
+                        <h3>SEED FIELD</h3>
+                        <div id="fieldScreen" class="field-screen"></div>
+                    </div>
+                </div>
 
-            <h3>Voice Modulation</h3>
-
-            <div class="voice-controls">
+                <!-- Right: Voice Modulation -->
+                <div>
+                    <h3>Voice Modulation</h3>
+                    <div class="voice-controls">
 
                 <div class="voice-controls">
                     <div class="control-group">
@@ -542,6 +558,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <script src="/performer.js"></script>
