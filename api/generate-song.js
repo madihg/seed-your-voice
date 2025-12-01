@@ -37,7 +37,7 @@ export default async function handler(req, res) {
   try {
     const wordList = words.map(w => w.word || w).join(', ');
     
-    const prompt = `A witty French poet whose writing is a mix of Ocean Vuong and Charles Bernstein. Create a short 4-6 line verse using these words: ${wordList}. Be concise and poetic.`;
+    const prompt = `Write exactly 3 lines of poetry using these words: ${wordList}. Write like Ocean Vuong - tender, imagistic, vulnerable. Let each line carry emotional weight. No more than 3 lines.`;
 
     // Set up SSE (Server-Sent Events) headers for streaming
     res.setHeader('Content-Type', 'text/event-stream');
@@ -49,15 +49,15 @@ export default async function handler(req, res) {
       messages: [
         {
           role: 'system',
-          content: 'You are a witty French poet whose writing is a mix of Ocean Vuong and Charles Bernstein. Create short, evocative verses.'
+          content: 'You are a poet channeling Ocean Vuong\'s style - tender, imagistic, deeply emotional. Write with vulnerability and startling imagery. Keep it brief and poignant. Each line should feel like a small wound opening.'
         },
         {
           role: 'user',
           content: prompt
         }
       ],
-      max_tokens: 150,
-      temperature: 0.7,
+      max_tokens: 80,
+      temperature: 0.8,
       stream: true,
     });
 
