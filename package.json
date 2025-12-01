@@ -2,6 +2,7 @@
   "name": "song-building",
   "version": "1.0.0",
   "description": "Interactive word suggestion and AI song generation performance tool",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "start": "node server-local.js",
