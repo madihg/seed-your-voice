@@ -34,15 +34,15 @@ function updateWordsDisplay() {
 }
 
 function updatePhonePreview() {
-    const phoneScreen = document.getElementById('phoneScreen');
-    phoneScreen.innerHTML = '';
+    const fieldScreen = document.getElementById('fieldScreen');
+    fieldScreen.innerHTML = '';
     
     currentWords.forEach(w => {
         const dot = document.createElement('div');
         dot.className = 'dot';
         dot.style.left = w.x + '%';
         dot.style.top = w.y + '%';
-        phoneScreen.appendChild(dot);
+        fieldScreen.appendChild(dot);
     });
 }
 
