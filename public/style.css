@@ -1,0 +1,39 @@
+/* Shared styles for the application */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Times New Roman', Times, serif;
+    background: #FFFFFF;
+    color: #000000;
+}
+
+.instruction-box {
+    font-family: 'Courier New', Courier, monospace;
+    border: 1px solid #000000;
+    padding: 8px;
+    margin: 12px 0;
+    background: #FFFFFF;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #FFFFFF;
+    border-left: 1px solid #000000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #000000;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #333333;
+}

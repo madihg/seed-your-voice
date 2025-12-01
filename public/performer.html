@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seeding Voices</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            padding: 12px;
+            background: #FFFFFF;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: normal;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 8px;
+        }
+
+        h2 {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 12px 0 8px 0;
+        }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .left-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .panel {
+            border: 1px solid #000000;
+            padding: 12px;
+        }
+
+        /* Phone Preview */
+        .phone-preview {
+            background: #FFFFFF;
+            border: 2px solid #000000;
+            aspect-ratio: 9/16;
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .phone-preview h3 {
+            font-size: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            padding: 4px;
+            border-bottom: 1px solid #000000;
+            background: #000000;
+            color: #FFFFFF;
+        }
+
+        .phone-screen {
+            position: relative;
+            height: calc(100% - 28px);
+        }
+
+        .dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #000000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Words */
+        .words-container {
+            border: 1px solid #000000;
+            padding: 8px;
+            min-height: 100px;
+            margin-bottom: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .word-tag {
+            display: inline-block;
+            border: 1px solid #000000;
+            padding: 4px 8px;
+            margin: 4px;
+            background: #000000;
+            color: #FFFFFF;
+            font-size: 14px;
+        }
+
+        /* Buttons */
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            border: 1px solid #000000;
+            cursor: pointer;
+            background: #000000;
+            color: #FFFFFF;
+            margin-bottom: 8px;
+        }
+
+        button:hover:not(:disabled) {
+            background: #FFFFFF;
+            color: #000000;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-clear {
+            background: #FFFFFF;
+            color: #000000;
+        }
+
+        .btn-clear:hover:not(:disabled) {
+            background: #000000;
+            color: #FFFFFF;
+        }
+
+        /* Song Output */
+        #songOutput {
+            border: 1px solid #000000;
+            padding: 12px;
+            min-height: 150px;
+            font-size: 16px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+
+        /* Voice Controls */
+        .control-group {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #000000;
+        }
+
+        .control-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .control-value {
+            float: right;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 2px;
+            background: #000000;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #000000;
+            cursor: pointer;
+            border: 1px solid #000000;
+        }
+
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #000000;
+            cursor: pointer;
+            border: 1px solid #000000;
+        }
+
+        .status {
+            padding: 8px;
+            border: 1px solid #000000;
+            text-align: center;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .status.active {
+            background: #000000;
+            color: #FFFFFF;
+        }
+
+        /* QR Code */
+        .qr-container {
+            border: 1px solid #000000;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .qr-container h3 {
+            font-size: 12px;
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 8px;
+        }
+
+        #qrcode {
+            display: inline-block;
+            padding: 8px;
+            border: 1px solid #000000;
+        }
+
+        #qrcode img {
+            display: block;
+        }
+
+        .audience-url {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 10px;
+            margin-top: 8px;
+            word-break: break-all;
+        }
+
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .left-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Seeding Voices</h1>
+
+    <div class="main-container">
+        <div class="left-section">
+            <!-- Left Panel: Song Generation -->
+            <div class="panel">
+                <h2>Words (<span id="wordCount">0</span>)</h2>
+                <div id="wordsContainer" class="words-container">
+                    Waiting for words...
+                </div>
+
+                <button id="clearBtn" class="btn-clear">CLEAR WORDS</button>
+
+                <h2>Generated Song</h2>
+                <div id="songOutput">Song will appear here...</div>
+
+                <button id="generateSongBtn">GENERATE SONG</button>
+            </div>
+
+            <!-- Right Panel: Voice Modulation -->
+            <div class="panel">
+                <h2>Voice Modulation</h2>
+
+                <button id="voiceToggle">START VOICE INPUT</button>
+                <div id="voiceStatus" class="status">MICROPHONE: OFF</div>
+
+                <div class="voice-controls">
+                    <div class="control-group">
+                        <label>
+                            Pitch Shift
+                            <span class="control-value" id="pitchValue">0</span>
+                        </label>
+                        <input type="range" id="pitchShift" min="-12" max="12" value="0" step="0.5">
+                    </div>
+
+                    <div class="control-group">
+                        <label>
+                            Reverb Mix
+                            <span class="control-value" id="reverbValue">30%</span>
+                        </label>
+                        <input type="range" id="reverbMix" min="0" max="100" value="30">
+                    </div>
+
+                    <div class="control-group">
+                        <label>
+                            Delay Time
+                            <span class="control-value" id="delayValue">0.3s</span>
+                        </label>
+                        <input type="range" id="delayTime" min="0" max="1" value="0.3" step="0.05">
+                    </div>
+
+                    <div class="control-group">
+                        <label>
+                            Delay Feedback
+                            <span class="control-value" id="feedbackValue">30%</span>
+                        </label>
+                        <input type="range" id="delayFeedback" min="0" max="90" value="30">
+                    </div>
+
+                    <div class="control-group">
+                        <label>
+                            Low-Pass Filter
+                            <span class="control-value" id="filterValue">5000Hz</span>
+                        </label>
+                        <input type="range" id="filterFreq" min="200" max="10000" value="5000" step="100">
+                    </div>
+
+                    <div class="control-group">
+                        <label>
+                            Distortion
+                            <span class="control-value" id="distortionValue">0</span>
+                        </label>
+                        <input type="range" id="distortion" min="0" max="100" value="0">
+                    </div>
+
+                    <div class="control-group">
+                        <label>
+                            Whisper Effect
+                            <span class="control-value" id="whisperValue">0%</span>
+                        </label>
+                        <input type="range" id="whisperEffect" min="0" max="100" value="0">
+                    </div>
+
+                    <div class="control-group">
+                        <label>
+                            Master Volume
+                            <span class="control-value" id="volumeValue">80%</span>
+                        </label>
+                        <input type="range" id="masterVolume" min="0" max="100" value="80">
+                    </div>
+                </div>
+
+                <button id="generateVoiceBtn">GENERATE VOICE</button>
+            </div>
+        </div>
+
+        <!-- Right Sidebar: Phone Preview -->
+        <div>
+            <div class="phone-preview">
+                <h3>AUDIENCE VIEW</h3>
+                <div id="phoneScreen" class="phone-screen"></div>
+            </div>
+
+            <div class="qr-container">
+                <h3>SCAN TO SUBMIT</h3>
+                <div id="qrcode"></div>
+                <div class="audience-url" id="audienceUrl">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/performer.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Building - Interactive Performance</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 12px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: normal;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #000000;
+            padding-bottom: 8px;
+        }
+
+        .description {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #000000;
+            margin: 12px 0;
+        }
+
+        td {
+            border: 1px solid #000000;
+            padding: 12px;
+        }
+
+        a {
+            color: #000000;
+            text-decoration: underline;
+            font-weight: bold;
+        }
+
+        a:hover {
+            background: #000000;
+            color: #FFFFFF;
+        }
+
+        .note {
+            font-family: 'Courier New', Courier, monospace;
+            border: 1px solid #000000;
+            padding: 8px;
+            margin-top: 12px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Song Building</h1>
+    
+    <p class="description">
+        An interactive performance tool where audience members suggest words, 
+        and AI creates poetic songs with live voice modulation.
+    </p>
+
+    <table>
+        <tr>
+            <td width="50%">
+                <strong>For Audience Members</strong><br>
+                <a href="/audience.html">Submit Words &rarr;</a>
+            </td>
+            <td width="50%">
+                <strong>For Performers</strong><br>
+                <a href="/performer.html">Seeding Voices &rarr;</a>
+            </td>
+        </tr>
+    </table>
+
+    <div class="note">
+        AUDIENCE: Visit the submission page to suggest words.<br>
+        PERFORMER: Use Seeding Voices to see words and generate songs.
+    </div>
+</body>
+</html>

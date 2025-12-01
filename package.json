@@ -1,0 +1,29 @@
+{
+  "name": "song-building",
+  "version": "1.0.0",
+  "description": "Interactive word suggestion and AI song generation performance tool",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server-local.js",
+    "dev": "node server-local.js",
+    "vercel:dev": "vercel dev",
+    "build": "echo 'No build step required'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "performance",
+    "ai",
+    "song",
+    "openai",
+    "voice-modulation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "openai": "^4.20.0"
+  },
+  "devDependencies": {
+    "vercel": "^33.0.0"
+  }
+}

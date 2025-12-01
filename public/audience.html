@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Suggest a Word</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+        }
+
+        body {
+            background: #FFFFFF;
+            font-family: 'Times New Roman', Times, serif;
+            touch-action: none;
+        }
+
+        #canvas {
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            position: relative;
+        }
+
+        .dot {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #000000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+        }
+
+        .dot.mine {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.3);
+                opacity: 0.7;
+            }
+        }
+
+        .input-container {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            display: none;
+        }
+
+        .input-container.active {
+            display: block;
+        }
+
+        .input-box {
+            background: #FFFFFF;
+            border: 2px solid #000000;
+            padding: 12px;
+            min-width: 250px;
+        }
+
+        #wordInput {
+            width: 100%;
+            padding: 8px;
+            font-size: 18px;
+            font-family: 'Times New Roman', Times, serif;
+            border: 1px solid #000000;
+            background: #FFFFFF;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+
+        #wordInput:focus {
+            outline: 2px solid #000000;
+            outline-offset: 2px;
+        }
+
+        #doneBtn {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            background: #000000;
+            color: #FFFFFF;
+            border: 1px solid #000000;
+            cursor: pointer;
+        }
+
+        #doneBtn:active {
+            background: #FFFFFF;
+            color: #000000;
+        }
+
+        .word-label {
+            position: absolute;
+            transform: translate(-50%, -150%);
+            font-size: 14px;
+            font-weight: bold;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .submitted-view {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #FFFFFF;
+            display: none;
+            flex-direction: column;
+        }
+
+        .submitted-view.active {
+            display: flex;
+        }
+
+        .header {
+            padding: 12px;
+            border-bottom: 1px solid #000000;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .dots-display {
+            flex: 1;
+            position: relative;
+            border-bottom: 1px solid #000000;
+        }
+
+        .words-list {
+            padding: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+            border-bottom: 1px solid #000000;
+        }
+
+        .words-list h3 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        .word-item {
+            display: inline-block;
+            border: 1px solid #000000;
+            padding: 4px 8px;
+            margin: 2px;
+            font-size: 12px;
+        }
+
+        @media (max-height: 500px) {
+            .input-box {
+                min-width: 200px;
+                padding: 8px;
+            }
+            
+            #wordInput {
+                font-size: 16px;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Initial click interface -->
+    <div id="canvas"></div>
+    <div id="inputContainer" class="input-container">
+        <div class="input-box">
+            <input 
+                type="text" 
+                id="wordInput" 
+                placeholder="Type your word..."
+                maxlength="50"
+                autocomplete="off"
+            />
+            <button id="doneBtn">DONE</button>
+        </div>
+    </div>
+
+    <!-- After submission view -->
+    <div id="submittedView" class="submitted-view">
+        <div class="header">
+            YOUR WORD HAS BEEN SUBMITTED
+        </div>
+        <div id="dotsDisplay" class="dots-display"></div>
+        <div class="words-list">
+            <h3>ALL WORDS:</h3>
+            <div id="wordsList"></div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const inputContainer = document.getElementById('inputContainer');
+        const wordInput = document.getElementById('wordInput');
+        const doneBtn = document.getElementById('doneBtn');
+        const submittedView = document.getElementById('submittedView');
+        const dotsDisplay = document.getElementById('dotsDisplay');
+        const wordsList = document.getElementById('wordsList');
+
+        let myDot = null;
+        let hasSubmitted = localStorage.getItem('hasSubmitted') === 'true';
+        let pollInterval;
+
+        // Check if already submitted
+        if (hasSubmitted) {
+            showSubmittedView();
+            startPolling();
+        }
+
+        // Handle click on canvas
+        canvas.addEventListener('click', (e) => {
+            if (hasSubmitted || myDot) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+            // Create pulsating dot
+            myDot = { x, y, clientX: e.clientX, clientY: e.clientY };
+            createDot(x, y, true, canvas);
+
+            // Position input container
+            positionInput(e.clientX, e.clientY);
+            inputContainer.classList.add('active');
+            
+            // Focus input with delay to ensure keyboard opens
+            setTimeout(() => {
+                wordInput.focus();
+                // Force keyboard on mobile
+                wordInput.click();
+            }, 100);
+        });
+
+        // Position input to avoid going off screen
+        function positionInput(clientX, clientY) {
+            const rect = canvas.getBoundingClientRect();
+            let x = clientX;
+            let y = clientY;
+
+            // Keep input on screen with padding
+            const padding = 20;
+            const inputWidth = 250;
+            const inputHeight = 100;
+
+            if (x + inputWidth/2 > rect.width - padding) {
+                x = rect.width - inputWidth/2 - padding;
+            }
+            if (x - inputWidth/2 < padding) {
+                x = inputWidth/2 + padding;
+            }
+            if (y + inputHeight/2 > rect.height - padding) {
+                y = rect.height - inputHeight/2 - padding;
+            }
+            if (y - inputHeight/2 < padding) {
+                y = inputHeight/2 + padding;
+            }
+
+            inputContainer.style.left = x + 'px';
+            inputContainer.style.top = y + 'px';
+        }
+
+        // Create dot element
+        function createDot(x, y, isMine, container) {
+            const dot = document.createElement('div');
+            dot.className = 'dot' + (isMine ? ' mine' : '');
+            dot.style.left = x + '%';
+            dot.style.top = y + '%';
+            container.appendChild(dot);
+            return dot;
+        }
+
+        // Handle done button
+        doneBtn.addEventListener('click', submitWord);
+        wordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                submitWord();
+            }
+        });
+
+        async function submitWord() {
+            const word = wordInput.value.trim();
+            
+            if (!word) {
+                alert('Please enter a word');
+                return;
+            }
+
+            if (!myDot) return;
+
+            doneBtn.disabled = true;
+            doneBtn.textContent = 'SENDING...';
+
+            try {
+                const response = await fetch('/api/submit-word', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        word: word,
+                        x: myDot.x,
+                        y: myDot.y
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('hasSubmitted', 'true');
+                    hasSubmitted = true;
+                    inputContainer.classList.remove('active');
+                    wordInput.value = '';
+                    showSubmittedView();
+                    startPolling();
+                } else {
+                    alert('ERROR: ' + (data.error || 'Failed to send word'));
+                    doneBtn.disabled = false;
+                    doneBtn.textContent = 'DONE';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Network error. Please try again.');
+                doneBtn.disabled = false;
+                doneBtn.textContent = 'DONE';
+            }
+        }
+
+        function showSubmittedView() {
+            canvas.style.display = 'none';
+            inputContainer.style.display = 'none';
+            submittedView.classList.add('active');
+        }
+
+        async function fetchAndDisplayWords() {
+            try {
+                const response = await fetch('/api/get-words');
+                const data = await response.json();
+                
+                // Clear and redraw dots
+                dotsDisplay.innerHTML = '';
+                data.words.forEach(w => {
+                    createDot(w.x, w.y, false, dotsDisplay);
+                });
+
+                // Update words list
+                wordsList.innerHTML = data.words
+                    .map(w => `<span class="word-item">${w.word}</span>`)
+                    .join('');
+            } catch (error) {
+                console.error('Error fetching words:', error);
+            }
+        }
+
+        function startPolling() {
+            fetchAndDisplayWords();
+            pollInterval = setInterval(fetchAndDisplayWords, 2000);
+        }
+    </script>
+</body>
+</html>
