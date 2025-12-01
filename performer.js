@@ -331,7 +331,7 @@ async function toggleVoice() {
             masterGain.connect(audioContext.destination);
             
             isVoiceActive = true;
-            voiceToggle.textContent = 'STOP VOICE INPUT';
+            voiceToggle.textContent = 'STOP BREATHING';
             voiceStatus.textContent = 'MICROPHONE: ACTIVE';
             voiceStatus.classList.add('active');
             
@@ -349,7 +349,7 @@ async function toggleVoice() {
         }
         
         isVoiceActive = false;
-        voiceToggle.textContent = 'START VOICE INPUT';
+        voiceToggle.textContent = 'BREATHE A VOICE';
         voiceStatus.textContent = 'MICROPHONE: OFF';
         voiceStatus.classList.remove('active');
     }
