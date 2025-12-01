@@ -33,6 +33,24 @@
             position: relative;
         }
 
+        .instructions {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 12px;
+            border-bottom: 1px solid #000000;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            text-align: center;
+            background: #FFFFFF;
+            z-index: 10;
+        }
+
+        .instructions.hidden {
+            display: none;
+        }
+
         .dot {
             position: absolute;
             width: 20px;
@@ -202,6 +220,11 @@
     </style>
 </head>
 <body>
+    <!-- Instructions -->
+    <div id="instructions" class="instructions">
+        CLICK ANYWHERE ON THE SCREEN TO PLACE YOUR WORD
+    </div>
+
     <!-- Initial click interface -->
     <div id="canvas"></div>
     <div id="inputContainer" class="input-container">
@@ -237,6 +260,7 @@
         const submittedView = document.getElementById('submittedView');
         const dotsDisplay = document.getElementById('dotsDisplay');
         const wordsList = document.getElementById('wordsList');
+        const instructions = document.getElementById('instructions');
 
         let myDot = null;
         let hasSubmitted = false;
@@ -271,6 +295,9 @@
         // Handle click on canvas
         canvas.addEventListener('click', (e) => {
             if (hasSubmitted || myDot) return;
+
+            // Hide instructions
+            instructions.classList.add('hidden');
 
             const rect = canvas.getBoundingClientRect();
             const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -391,6 +418,7 @@
         function showSubmittedView() {
             canvas.style.display = 'none';
             inputContainer.style.display = 'none';
+            instructions.classList.add('hidden');
             submittedView.classList.add('active');
         }
 
