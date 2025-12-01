@@ -1,7 +1,8 @@
-// Clear all words (for performer to reset between performances)
-let words = [];
+import redis from '../lib/redis.js';
 
-export default function handler(req, res) {
+const WORDS_KEY = 'seed-your-voice:words';
+
+export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,11 +21,15 @@ export default function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  words = [];
-
-  res.status(200).json({ 
-    success: true,
-    message: 'All words cleared' 
-  });
+  try {
+    await redis.del(WORDS_KEY);
+    
+    res.status(200).json({ 
+      success: true,
+      message: 'All words cleared' 
+    });
+  } catch (error) {
+    console.error('Redis error:', error);
+    res.status(500).json({ error: 'Failed to clear words' });
+  }
 }
-

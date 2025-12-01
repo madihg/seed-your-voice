@@ -1,7 +1,8 @@
-// Shared in-memory storage (same reference as submit-word.js in same instance)
-let words = [];
+import redis from '../lib/redis.js';
 
-export default function handler(req, res) {
+const WORDS_KEY = 'seed-your-voice:words';
+
+export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,9 +21,15 @@ export default function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  res.status(200).json({ 
-    words: words,
-    count: words.length 
-  });
+  try {
+    const words = await redis.get(WORDS_KEY) || [];
+    
+    res.status(200).json({ 
+      words: words,
+      count: words.length 
+    });
+  } catch (error) {
+    console.error('Redis error:', error);
+    res.status(500).json({ error: 'Failed to fetch words' });
+  }
 }
-

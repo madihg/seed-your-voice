@@ -43,13 +43,40 @@ Access at `http://localhost:9000`:
    - Go to [vercel.com](https://vercel.com)
    - Import this repository
    - Add environment variable: `OPENAI_API_KEY`
-   - Deploy!
+   - Click Deploy (initial deployment)
 
-3. **Or use Vercel CLI:**
+3. **Add Upstash Redis (Required for persistent storage):**
+   - In your Vercel project, go to **Storage** tab
+   - Click **Marketplace**
+   - Find **Upstash** and click **Add Integration**
+   - Create a free Redis database
+   - Link to your project
+   - Redeploy (environment variables auto-added)
+
+4. **Or use Vercel CLI:**
 ```bash
 npm install -g vercel
 vercel --prod
 ```
+
+## Storage Setup
+
+### Upstash Redis (Recommended)
+
+This app uses **Upstash Redis** for storing audience submissions. It provides:
+- ✅ Persistent storage across serverless function calls
+- ✅ Real-time performance
+- ✅ Free tier (10k commands/day)
+- ✅ Zero configuration needed
+
+**Setup via Vercel Marketplace:**
+1. Deploy your project to Vercel
+2. Go to Storage → Marketplace → Upstash
+3. Add integration and create database
+4. Environment variables (`UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN`) are auto-added
+
+**Local Development:**
+The app automatically uses in-memory storage when Redis env vars aren't present. Data will reset on restart during local development, which is fine for testing.
 
 ## How It Works
 
