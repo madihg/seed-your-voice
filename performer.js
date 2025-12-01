@@ -125,7 +125,9 @@ async function generateSong() {
         songOutput.textContent = 'Error generating song: ' + error.message;
     } finally {
         generateBtn.disabled = false;
-        generateBtn.textContent = 'GENERATE SONG';
+        generateBtn.textContent = 'SPROUT A LANGUAGE';
+        hasSproutedLanguage = true;
+        updateVoiceToggleState();
     }
 }
 
@@ -211,12 +213,17 @@ function generateVoiceFromDots() {
     animateSlider('distortion', params.distortion);
     animateSlider('whisperEffect', params.whisperEffect);
     animateSlider('masterVolume', params.masterVolume);
+    
+    hasBloomedSound = true;
+    updateVoiceToggleState();
 }
 
 // ===== VOICE MODULATION =====
 let audioContext;
 let microphone;
 let isVoiceActive = false;
+let hasSproutedLanguage = false;
+let hasBloomedSound = false;
 
 // Audio nodes
 let sourceNode;
@@ -263,9 +270,26 @@ async function initAudioContext() {
     }
 }
 
+function updateVoiceToggleState() {
+    const voiceToggle = document.getElementById('voiceToggle');
+    
+    if (hasSproutedLanguage && hasBloomedSound) {
+        voiceToggle.classList.remove('inactive');
+        voiceToggle.disabled = false;
+    } else {
+        voiceToggle.classList.add('inactive');
+        voiceToggle.disabled = true;
+    }
+}
+
 async function toggleVoice() {
     const voiceToggle = document.getElementById('voiceToggle');
     const voiceStatus = document.getElementById('voiceStatus');
+    
+    // Can't activate until both sprout and bloom are done
+    if (!hasSproutedLanguage || !hasBloomedSound) {
+        return;
+    }
     
     if (!isVoiceActive) {
         try {
@@ -470,3 +494,6 @@ generateQRCode();
 // Start polling for words
 pollInterval = setInterval(fetchWords, 2000);
 fetchWords(); // Initial fetch
+
+// Set initial voice toggle state
+updateVoiceToggleState();
