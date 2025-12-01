@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Seeding a Voice</title>
+    <script>
+        // Immediate authentication check - redirect before page loads
+        if (sessionStorage.getItem('performerAuth') !== 'authenticated') {
+            window.location.replace('/performer-login.html');
+        }
+    </script>
     <link rel="stylesheet" href="/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
@@ -561,12 +567,6 @@
     </div>
     </div>
 
-    <script>
-        // Check authentication
-        if (sessionStorage.getItem('performerAuth') !== 'authenticated') {
-            window.location.href = '/performer-login.html';
-        }
-    </script>
     <script src="/performer.js"></script>
 </body>
 </html>
