@@ -12,7 +12,9 @@ export default async function handler(req, res) {
 
   try {
     // Check if we're using real Redis or in-memory fallback
-    const isProduction = !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+    const redisUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+    const redisToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
+    const isProduction = !!(redisUrl && redisToken);
     
     // Test write
     const testKey = 'seed-your-voice:test';
@@ -27,10 +29,10 @@ export default async function handler(req, res) {
     
     res.status(200).json({
       success: true,
-      storage: isProduction ? 'Upstash Redis (Production)' : 'In-Memory (Local Dev)',
+      storage: isProduction ? 'Vercel KV / Redis (Production)' : 'In-Memory (Local Dev)',
       environment: {
-        hasRedisUrl: !!process.env.UPSTASH_REDIS_REST_URL,
-        hasRedisToken: !!process.env.UPSTASH_REDIS_REST_TOKEN,
+        hasRedisUrl: !!(process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL),
+        hasRedisToken: !!(process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN),
         hasOpenAI: !!process.env.OPENAI_API_KEY
       },
       test: {
@@ -39,8 +41,8 @@ export default async function handler(req, res) {
         match: JSON.stringify(testValue) === JSON.stringify(readValue)
       },
       message: isProduction 
-        ? '✅ Upstash Redis is connected and working!' 
-        : '⚠️ Using in-memory storage (local dev). Deploy to Vercel with Upstash to use Redis.'
+        ? '✅ Redis (Vercel KV) is connected and working!' 
+        : '⚠️ Using in-memory storage (local dev). Deploy to Vercel with KV to use Redis.'
     });
   } catch (error) {
     res.status(500).json({
