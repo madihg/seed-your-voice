@@ -178,12 +178,8 @@
 
         .main-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 2fr;
             gap: 12px;
-        }
-
-        .sound-section {
-            display: contents;
         }
 
         .panel {
@@ -272,7 +268,7 @@
         .seed-field {
             background: #FFFFFF;
             border: 2px solid #000000;
-            aspect-ratio: 9/16;
+            height: 300px;
             position: relative;
             margin-bottom: 12px;
         }
@@ -302,10 +298,10 @@
             transform: translate(-50%, -50%);
         }
 
-        /* Voice Controls - Single Column */
+        /* Voice Controls - 2 Column Grid */
         .voice-controls {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 12px;
         }
 
@@ -371,18 +367,11 @@
             .main-grid {
                 grid-template-columns: 1fr;
             }
-
-            .sound-section {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 12px;
-            }
         }
 
         @media (max-width: 768px) {
-            .sound-section {
-                display: flex;
-                flex-direction: column;
+            .voice-controls {
+                grid-template-columns: 1fr;
             }
 
             .header {
@@ -463,25 +452,20 @@ Each audience member can submit one word. The position of their click influences
             <button id="generateSongBtn">SPROUT A LANGUAGE</button>
         </div>
 
-        <!-- Columns 2-3: Seeding a Sound -->
-        <div class="sound-section">
-            <!-- Column 2: Seed Field -->
-            <div class="panel">
-                <h2>Seeding a Sound</h2>
+        <!-- Column 2: Seeding a Sound -->
+        <div class="panel">
+            <h2>Seeding a Sound</h2>
 
-                <div class="seed-field">
-                    <h3>SEED FIELD</h3>
-                    <div id="fieldScreen" class="field-screen"></div>
-                </div>
-
-                <button id="generateVoiceBtn">LET A SOUND BLOOM</button>
+            <div class="seed-field">
+                <h3>SEED FIELD</h3>
+                <div id="fieldScreen" class="field-screen"></div>
             </div>
 
-            <!-- Column 3: Voice Parameters -->
-            <div class="panel">
-                <h2>&nbsp;</h2>
+            <button id="generateVoiceBtn">LET A SOUND BLOOM</button>
 
-                <h3>Voice Modulation</h3>
+            <h3>Voice Modulation</h3>
+
+            <div class="voice-controls">
 
                 <div class="voice-controls">
                     <div class="control-group">
