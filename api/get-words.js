@@ -1,6 +1,7 @@
 import redis from '../lib/redis.js';
 
 const WORDS_KEY = 'seed-your-voice:words';
+const SESSION_KEY = 'seed-your-voice:session';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -23,10 +24,12 @@ export default async function handler(req, res) {
 
   try {
     const words = await redis.get(WORDS_KEY) || [];
+    const session = await redis.get(SESSION_KEY) || 0;
     
     res.status(200).json({ 
       words: words,
-      count: words.length 
+      count: words.length,
+      session: parseInt(session)
     });
   } catch (error) {
     console.error('Redis error:', error);

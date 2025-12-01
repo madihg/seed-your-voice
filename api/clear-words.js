@@ -1,6 +1,7 @@
 import redis from '../lib/redis.js';
 
 const WORDS_KEY = 'seed-your-voice:words';
+const SESSION_KEY = 'seed-your-voice:session';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -22,11 +23,18 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Clear words
     await redis.del(WORDS_KEY);
+    
+    // Increment session ID so everyone can submit again
+    const currentSession = await redis.get(SESSION_KEY) || 0;
+    const newSession = parseInt(currentSession) + 1;
+    await redis.set(SESSION_KEY, newSession);
     
     res.status(200).json({ 
       success: true,
-      message: 'All words cleared' 
+      message: 'All words cleared',
+      newSession: newSession
     });
   } catch (error) {
     console.error('Redis error:', error);

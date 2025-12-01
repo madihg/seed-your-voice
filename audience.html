@@ -239,14 +239,34 @@
         const wordsList = document.getElementById('wordsList');
 
         let myDot = null;
-        let hasSubmitted = localStorage.getItem('hasSubmitted') === 'true';
+        let hasSubmitted = false;
+        let currentSession = null;
         let pollInterval;
 
-        // Check if already submitted
-        if (hasSubmitted) {
-            showSubmittedView();
-            startPolling();
+        // Check session and submission status
+        async function checkSubmissionStatus() {
+            try {
+                const response = await fetch('/api/get-words');
+                const data = await response.json();
+                
+                currentSession = data.session;
+                const savedSession = localStorage.getItem('submittedSession');
+                
+                // If session has changed, they can submit again
+                if (savedSession && parseInt(savedSession) !== currentSession) {
+                    localStorage.removeItem('submittedSession');
+                    hasSubmitted = false;
+                } else if (savedSession) {
+                    hasSubmitted = true;
+                    showSubmittedView();
+                    startPolling();
+                }
+            } catch (error) {
+                console.error('Error checking session:', error);
+            }
         }
+        
+        checkSubmissionStatus();
 
         // Handle click on canvas
         canvas.addEventListener('click', (e) => {
@@ -348,7 +368,8 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    localStorage.setItem('hasSubmitted', 'true');
+                    // Save the current session
+                    localStorage.setItem('submittedSession', currentSession);
                     hasSubmitted = true;
                     inputContainer.classList.remove('active');
                     wordInput.value = '';
@@ -377,6 +398,16 @@
             try {
                 const response = await fetch('/api/get-words');
                 const data = await response.json();
+                
+                // Check if session has changed (performer cleared words)
+                if (currentSession !== null && data.session !== currentSession) {
+                    // Session changed! Allow user to submit again
+                    localStorage.removeItem('submittedSession');
+                    location.reload();
+                    return;
+                }
+                
+                currentSession = data.session;
                 
                 // Clear and redraw dots
                 dotsDisplay.innerHTML = '';
